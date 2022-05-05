@@ -40,11 +40,12 @@ jobs:
       env:
         DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
       run: vendor/bin/phpunit --coverage-clover=clover.xml
-    - name: Setup npm
-      run: |
-        npm install -g yarn
-        yarn install
-        yarn build
+    - name: Code Coverage Check
+      uses: sourcetoad/phpunit-coverage-action@v1
+      with:
+        clover_report_path: clover.xml
+        min_coverage_percent: 0
+        fail_build_on_under: true
     - name: CodeClimate
       uses: paambaati/codeclimate-action@v3.0.0
       env:
