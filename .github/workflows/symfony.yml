@@ -19,6 +19,9 @@ jobs:
     - uses: shivammathur/setup-php@2cb9b829437ee246e9b3cac53555a39208ca6d28
       with:
         php-version: '8.0'
+    - uses: actions/setup-node@master
+      with:
+        node-version: '12'
     - uses: actions/checkout@v3
     - name: Copy .env.test.local
       run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
@@ -40,13 +43,13 @@ jobs:
       env:
         DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
       run: vendor/bin/phpunit --coverage-clover clover.xml
-    - uses: actions/setup-node@master
-      with:
-        node-version: '12'
-    - run: npm install -g yarn
-    - run: yarn install
-    - run: yarn build
-    - uses: paambaati/codeclimate-action@v2.2.4
+    - name: CodeClimate
+    - name: Test & publish code coverage
+      run: |
+        npm install -g yarn
+        yarn install
+        yarn build
+      uses: paambaati/codeclimate-action@v2.2.4
       env:
         CC_TEST_REPORTER_ID: c48af0f5e552929c2988a150befb8bd75e85f69cf58c98d7c9fde30a632cb512
 
