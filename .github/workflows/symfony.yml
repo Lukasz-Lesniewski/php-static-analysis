@@ -45,11 +45,12 @@ jobs:
         clover_report_path: clover.xml
         min_coverage_percent: 0
         fail_build_on_under: true
-    - name: CodeClimate
+    - name: Setup npm
       run: |
         npm install -g yarn
         yarn install
         yarn build
+    - name: CodeClimate
       uses: paambaati/codeclimate-action@v2.2.4
       env:
         CC_TEST_REPORTER_ID: c48af0f5e552929c2988a150befb8bd75e85f69cf58c98d7c9fde30a632cb512
