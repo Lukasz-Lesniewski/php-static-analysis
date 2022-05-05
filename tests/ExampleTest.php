@@ -11,7 +11,7 @@ class ExampleTest extends TestCase
     /**
      * @test
      */
-    public function shouldFailPipeline(): void {
-        $this->assertFalse(true);
+    public function shouldPassPipeline(): void {
+        $this->assertTrue(true);
     }
 }
