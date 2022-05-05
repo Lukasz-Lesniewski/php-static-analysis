@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
+use App\Example;
 use PHPUnit\Framework\TestCase;
 
 class ExampleTest extends TestCase
@@ -11,7 +12,9 @@ class ExampleTest extends TestCase
     /**
      * @test
      */
-    public function shouldPassPipeline(): void {
-        $this->assertTrue(true);
+    public function shouldGiveCoins(): void {
+        $change = Example::run([50, 50, 20, 20], 'A');
+
+        $this->assertEquals([50 => 0, 20 => 2, 10 => 0, 5 => 1, 2 => 0, 1 => 0], $change);
     }
 }
