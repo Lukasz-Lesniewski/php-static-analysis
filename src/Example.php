@@ -12,36 +12,35 @@ class Example
     {
         $products = ['A' => 95];
 
-        return self::change(
-            !isset($products[$selectedProduct])
-                ? throw new RuntimeException('Unknown product')
-                : array_sum(
-                    array_filter($insertedCoins, static function ($coin) {
-                        return match ($coin) {
-                            1, 2, 5, 10, 20, 50 => true,
-                            default => false,
-                        };
-                    })
-                ) - $products[$selectedProduct],
-            [50 => 0, 20 => 0, 10 => 0, 5 => 0, 2 => 0, 1 => 0],
-            [50, 20, 10, 5, 2, 1]
-        );
-    }
+        if (!isset($products[$selectedProduct])) {
+            throw new RuntimeException('Unknown product');
+        }
 
-    private static function change(int $amount, array $change, array $availableCoins): array
-    {
-        if ($amount < 0) {
+        $amount = array_sum(array_filter($insertedCoins, static fn ($coin) => match ($coin) {
+            1, 2, 5, 10, 20, 50 => true,
+        }));
+
+        if ($amount < $products[$selectedProduct]) {
             throw new RuntimeException('Not enough coins entered');
         }
 
+        return self::giveChangeInCoins(
+            changeInCents: $amount - $products[$selectedProduct],
+            changeInCoins: [50 => 0, 20 => 0, 10 => 0, 5 => 0, 2 => 0, 1 => 0],
+            availableCoins: [50, 20, 10, 5, 2, 1]
+        );
+    }
+
+    private static function giveChangeInCoins(int $changeInCents, array $changeInCoins, array $availableCoins): array
+    {
         if (empty($availableCoins)) {
-            return $change;
+            return $changeInCoins;
         }
 
-        $coin = array_shift($availableCoins);
-        $change[$coin] = (int)floor($amount / $coin);
-        $restFromAmount = $amount % $coin;
+        $biggestCoin = array_shift($availableCoins);
+        $changeInCoins[$biggestCoin] = (int)floor($changeInCents / $biggestCoin);
+        $reducedCents = $changeInCents % $biggestCoin;
 
-        return self::change($restFromAmount, $change, $availableCoins);
+        return self::giveChangeInCoins($reducedCents, $changeInCoins, $availableCoins);
     }
 }
